@@ -1,6 +1,6 @@
 # asyncImage Library
 
-ImageCacheLibrary is a platform-agnostic image caching library designed to efficiently store and retrieve images using Core Data. The library supports both iOS and macOS platforms.
+The library is a platform-agnostic image caching library designed to efficiently store and retrieve images using Core Data. The library supports both iOS and macOS platforms.
 
 ## Features
 
