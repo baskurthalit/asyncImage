@@ -8,6 +8,7 @@ ImageCacheLibrary is a platform-agnostic image caching library designed to effic
 - Caching of images to reduce network usage
 - Automatic deletion of outdated cache entries
 - Platform-agnostic implementation using `UIImage` on iOS and `NSImage` on macOS
+- SwiftUI support with `CAsyncImage()`
 
 ## Installation
 
@@ -20,6 +21,18 @@ dependencies: [
     .package(url: "https://github.com/baskurthalit/asyncImage.git", .upToNextMajor(from: "1.0.0"))
 ]
 ```
+### SwiftUI Image 
+Here's an example of using in SwiftUI.
+  ```swift
+  CAsyncImage(urlString: url) { image in
+      image
+          .resizable()
+  } placeholder: {
+      ProgressView()
+  }
+
+```
+
 ### UIImageView Extension Examples
 Here's an example of extending `UIImageView` to load images using `ImageLoader` with different approaches:
 ### GCD
