@@ -66,6 +66,11 @@ extension UIImageView {
     }
 }
 ```
+## Requirements
+
+- iOS 13.0 or later
+- macOS 11 or later 
+
 # Contributing
 
 We appreciate contributions, big or small.
