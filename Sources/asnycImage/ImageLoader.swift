@@ -13,8 +13,10 @@ import Foundation
  The core functionalities of `ImageLoader` include loading an image from a URL and caching it, retrieving an image from the cache, and saving an image to the local cache.
  */
 public struct ImageLoader: ImageLoaderInterface {
+    public static let instance: ImageLoaderInterface = ImageLoader()
     /// An instance of `ImageCacherInterface` responsible for caching and retrieving images.
     let imageCacher: ImageCacherInterface
+    
     /**
      Initializes the structure with an optional `ImageCacherInterface` instance.
      
@@ -37,14 +39,18 @@ public struct ImageLoader: ImageLoaderInterface {
     public func loadImage(from urlString: String) async throws -> PlatformImage? {
         guard !urlString.isEmpty else { return nil }
         
-        if let imageData = imageCacher.loadImage(url: urlString), let image = PlatformImage(data: imageData) { return image }
+        if let imageData = imageCacher.loadImage(url: urlString),
+           let image = PlatformImage(data: imageData) {
+            return image
+        } else {
+            guard let url = URL(string: urlString) else { return nil }
+            
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let image: PlatformImage = .init(data: data) else { return nil }
+            imageCacher.saveImage(url: urlString, image: data)
+            return image
+        }
         
-        guard let url = URL(string: urlString) else { return nil }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        guard let image: PlatformImage = .init(data: data) else { return nil }
-        imageCacher.saveImage(url: urlString, image: data)
-        return image
     }
     
     /**
@@ -59,20 +65,22 @@ public struct ImageLoader: ImageLoaderInterface {
         guard !urlString.isEmpty else { return completion(.failure(NSError())) }
         
         if let imageData = imageCacher.loadImage(url: urlString),
-           let image = PlatformImage(data: imageData) { return completion(.success(image)) }
-        
-        guard let url = URL(string: urlString) else { return completion(.failure(NSError())) }
-        URLSession.shared.dataTask(with: url) { imageData, urlResponse, error in
-            guard let imageData, error == nil 
-            else {
-                completion(.failure(NSError()))
-                return
-            }
-            
-            completion(.success(.init(data: imageData)))
-            
-            imageCacher.saveImage(url: urlString, image: imageData)
-            
-        }.resume()
+           let image = PlatformImage(data: imageData) {
+            return completion(.success(image))
+        } else {
+            guard let url = URL(string: urlString) else { return completion(.failure(NSError())) }
+            URLSession.shared.dataTask(with: url) { imageData, urlResponse, error in
+                guard let imageData, error == nil
+                else {
+                    completion(.failure(NSError()))
+                    return
+                }
+                
+                completion(.success(.init(data: imageData)))
+                
+                imageCacher.saveImage(url: urlString, image: imageData)
+                
+            }.resume()
+        }
     }
 }
