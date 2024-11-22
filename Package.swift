@@ -4,22 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "asnycImage",
+    name: "asyncImage",
     platforms: [.iOS(.v12),.macOS(.v11)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "asnycImage",
+            name: "asyncImage",
             type: .static,
-            targets: ["asnycImage"]),
+            targets: ["asyncImage"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "asnycImage"),
+            name: "asyncImage"),
         .testTarget(
-            name: "asnycImageTests",
-            dependencies: ["asnycImage"]),
+            name: "asyncImageTests",
+            dependencies: ["asyncImage"]),
     ]
 )
