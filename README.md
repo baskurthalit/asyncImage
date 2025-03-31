@@ -38,21 +38,22 @@ Here's an example of extending `UIImageView` to load images using `ImageLoader` 
 ### GCD
   ```swift
   extension UIImageView {
-      static let imageLoader: ImageLoader = .init()
-      
-      func load(from imageUrl: String) {
-          DispatchQueue.main.async {
-              Self.imageLoader.loadImage(from: imageUrl) { result in
-                  switch result {
-                  case .success(let image):
-                      self.image = image
-                  case .failure:
-                      break
-                  }
-              }
-          }
-      }
-  }
+    
+    func load(from imageUrl: String) {
+        let imageLoader: ImageLoader = .init()
+        
+        imageLoader.loadImage(from: imageUrl) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    self.image = image
+                case .failure:
+                    break
+                }
+            }
+        }
+    }
+}
 ```
 ### async/await
   ```swift
