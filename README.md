@@ -57,11 +57,12 @@ Here's an example of extending `UIImageView` to load images using `ImageLoader` 
 ### async/await
   ```swift
 extension UIImageView {
-    static let imageLoader: ImageLoader = .init()
     
     func load(from imageUrl: String) {
-        Task(priority:.userInitiated) {
-            image = try? await Self.imageLoader.loadImage(from: imageUrl)
+        let loader: ImageLoader = .init()
+        
+        Task { @MainActor in
+            image = try? await loader.loadImage(from: imageUrl)
         }
     }
 }
